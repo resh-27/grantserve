@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/frontend/grantserveFrontend" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/project/Api-Gateway" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/project/Application-service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/project/Auth-Service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/project/admin-server" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/project/audit-log-service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/project/audit-service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/project/budget-service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/project/config-server" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/project/disbursement-service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/project/evaluation-service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/project/program-service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/project/researcher-service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/project/review-service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/project/security-parent" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/project/service-registry" vcs="Git" />
+  </component>
+</project>

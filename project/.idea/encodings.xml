@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/Api-Gateway/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Application-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Auth-Service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/admin-server/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/audit-log-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/audit-service/audit_compliance_service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/budget-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/config-server/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/disbursement-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/evaluation-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/program-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/researcher-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/review-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/security-parent/core/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/security-parent/core/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/security-parent/reactive/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/security-parent/reactive/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/security-parent/servlet/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/security-parent/servlet/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/security-parent/shared/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/security-parent/shared/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/security-parent/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/security-parent/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/service-registry/src/main/java" charset="UTF-8" />
+  </component>
+</project>
