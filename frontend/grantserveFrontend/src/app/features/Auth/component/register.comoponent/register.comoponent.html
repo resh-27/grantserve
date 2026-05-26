@@ -1,0 +1,94 @@
+<div class="login-wrapper">
+  <div class="login-card shadow-sm">
+    
+    @if (isSuccess) {
+      <div class="text-center p-4 animate-fade-in">
+        <div class="mb-4">
+          <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+        </div>
+        <h2 class="fw-bold text-dark">Success!</h2>
+        <p class="text-muted mb-4">{{ registerMessage }}</p>
+        
+        <button routerLink="/" class="continue-btn w-100">
+          Go to Login <i class="bi bi-box-arrow-in-right ms-2"></i>
+        </button>
+      </div>
+    } 
+
+    @else {
+      <h1>Create Account</h1>
+      <p class="subtitle">Join the GrantServe community</p>
+
+      @if (isError) {
+        <div class="alert alert-danger alert-dismissible fade show animate-shake mb-4" role="alert">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-exclamation-octagon-fill fs-4 me-3"></i>
+            <div>
+              <strong class="d-block">Error</strong>
+              <span class="small">{{ registerMessage }}</span>
+            </div>
+          </div>
+          <button type="button" class="btn-close" (click)="closeAlert()" aria-label="Close"></button>
+        </div>
+      }
+
+      <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+        <div class="form-grid">
+          
+          <div class="input-group-custom full-width">
+            <label>Full Name</label>
+            <div class="input-wrapper">
+              <i class="bi bi-person"></i>
+              <input type="text" formControlName="name" placeholder="Enter your full name">
+            </div>
+          </div>
+
+          <div class="input-group-custom">
+            <label>Role</label>
+            <div class="input-wrapper">
+              <i class="bi bi-shield-lock"></i>
+              <select formControlName="role" class="minimal-select">
+                <option value="" disabled>Select Role</option>
+                <option value="RESEARCHER">Researcher</option>
+                <option value="REVIEWER">Reviewer</option>
+                <option value="MANAGER">Manager</option>
+                <option value="AUDITOR">Auditor</option>
+                <option value="COMPLIANCE">Compliance Officer</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="input-group-custom">
+            <label>Phone Number</label>
+            <div class="input-wrapper">
+              <i class="bi bi-phone"></i>
+              <input type="tel" formControlName="phone" placeholder="10-digit number">
+            </div>
+          </div>
+
+          <div class="input-group-custom full-width">
+            <label>Email Address</label>
+            <div class="input-wrapper">
+              <i class="bi bi-envelope"></i>
+              <input type="email" formControlName="email" placeholder="Enter your email">
+            </div>
+          </div>
+
+          <div class="input-group-custom full-width">
+            <label>Password</label>
+            <div class="input-wrapper">
+              <i class="bi bi-lock"></i>
+              <input type="password" formControlName="password" placeholder="Min. 8 characters">
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" [disabled]="registerForm.invalid" class="continue-btn mt-3">
+          Create Account <i class="bi bi-arrow-right"></i>
+        </button>
+
+        <p class="terms">Already have an account? <span routerLink="/" class="cursor-pointer text-primary fw-bold">Login</span></p>
+      </form>
+    }
+  </div>
+</div>

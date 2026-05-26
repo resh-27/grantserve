@@ -1,0 +1,243 @@
+@if (profile) {
+<main class="p-4 p-lg-5">
+    <header class="mb-5 pb-4 border-bottom">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <nav aria-label="breadcrumb" class="mb-2">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item">
+                            <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 rounded-pill">
+                                RESEARCHER PORTAL
+                            </span>
+                        </li>
+                    </ol>
+                </nav>
+                <h1 class="display-6 fw-bold text-dark m-0">Profile Overview</h1>
+                <p class="text-muted mt-2 mb-0">
+                    Manage your professional identity and research credentials
+                    <span class="ms-2 px-2 py-1 bg-light border rounded small">
+                        ID: {{ profile.researcherID }}
+                    </span>
+                </p>
+            </div>
+
+            <div class="d-flex flex-column align-items-end gap-3">
+                <div class="d-flex gap-2">
+                    @if (!isEditing) {
+                    <button class="btn btn-white shadow-sm px-4 fw-bold transition-up rounded-3"
+                        (click)="isEditing = true">
+                        <i class="bi bi-pencil-square me-2"></i> EDIT PROFILE
+                    </button>
+                    } @else {
+                    <button class="btn btn-success shadow-sm px-4 fw-bold transition-up rounded-3" (click)="onSave()">
+                        <i class="bi bi-check-circle me-2"></i> SAVE CHANGES
+                    </button>
+                    <button class="btn btn-light border shadow-sm px-4 fw-bold transition-up rounded-3"
+                        (click)="isEditing = false">
+                        ✕ CANCEL
+                    </button>
+                    }
+                </div>
+                <div class="small d-flex align-items-center gap-2 text-muted">
+                    <span class="fw-bold text-uppercase ls-1" style="font-size: 0.7rem;">Verification Status:</span>
+                    <span class="badge rounded-pill px-3 py-2"
+                        [ngClass]="profile.status === 'Verified' ? 'bg-success-subtle text-success' : 'bg-warning-subtle text-warning-emphasis'">
+                        ● {{ profile.status || 'Pending' }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="row g-4">
+        <div class="col-12 mb-2">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-transparent border-0 p-4 pb-0">
+                    <h5 class="fw-bold mb-0 text-dark border-start border-primary border-4 ps-3">Professional Identity
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    @if (!isEditing) {
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="mb-4">
+                                <label class="text-muted small fw-bold mb-1 text-uppercase ls-1">Full Name</label>
+                                <p class="fs-6 fw-semibold text-dark m-0">{{ profile.name }}</p>
+                            </div>
+                            <div>
+                                <label class="text-muted small fw-bold mb-1 text-uppercase ls-1">Institution</label>
+                                <p class="fs-6 fw-semibold text-dark m-0">{{ profile.institution || 'Not Provided' }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-4">
+                                <label class="text-muted small fw-bold mb-1 text-uppercase ls-1">Date of Birth</label>
+                                <p class="fs-6 fw-semibold text-dark m-0">{{ profile.dob || 'Not Provided' }}</p>
+                            </div>
+                            <div>
+                                <label class="text-muted small fw-bold mb-1 text-uppercase ls-1">Department</label>
+                                <p class="fs-6 fw-semibold text-dark m-0">{{ profile.department || 'Not Provided' }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-4">
+                                <label class="text-muted small fw-bold mb-1 text-uppercase ls-1">Gender</label>
+                                <p class="fs-6 fw-semibold text-dark m-0">{{ profile.gender || 'Not Provided' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    } @else {
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-muted text-uppercase">Full Name</label>
+                            <input type="text" class="form-control form-control-lg bg-light border-0"
+                                [(ngModel)]="profile.name">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-muted text-uppercase">Date of Birth</label>
+                            <input type="date" class="form-control form-control-lg bg-light border-0"
+                                [(ngModel)]="profile.dob">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-muted text-uppercase">Gender</label>
+                            <select class="form-select form-select-lg bg-light border-0" [(ngModel)]="profile.gender">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-muted text-uppercase">Institution</label>
+                            <input type="text" class="form-control form-control-lg bg-light border-0"
+                                [(ngModel)]="profile.institution">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-muted text-uppercase">Department</label>
+                            <input type="text" class="form-control form-control-lg bg-light border-0"
+                                [(ngModel)]="profile.department">
+                        </div>
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-header bg-transparent border-0 p-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="fw-bold mb-0 text-dark border-start border-primary border-4 ps-3">Document Repository
+                        </h5>
+                        <p class="text-muted small mb-0 ms-3">Centralized storage for research credentials</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <div class="input-group input-group-sm border rounded-2" style="width: 220px;">
+                            <span class="input-group-text bg-white border-0 text-muted">🔍</span>
+                            <input type="text" class="form-control border-0" placeholder="Search docs..."
+                                [(ngModel)]="searchTerm">
+                        </div>
+                        <button (click)="openUploadModal()" class="btn btn-primary btn-sm px-3 fw-bold rounded-pill">
+                            + UPLOAD NEW
+                        </button>
+
+                        <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel"
+                            aria-hidden="true" #uploadModal>
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content border-0 shadow-lg rounded-4">
+                                    <div class="modal-header border-0 p-4 pb-0">
+                                        <h5 class="modal-title fw-bold text-dark" id="uploadModalLabel">Upload New
+                                            Document</h5>
+                                        <button type="button" class="btn-close" (click)="closeModal()"></button>
+                                    </div>
+                                    <div class="modal-body p-4">
+                                        <form (ngSubmit)="onModalSubmit()" #uploadForm="ngForm">
+                                            <div class="mb-3">
+                                                <label
+                                                    class="form-label small fw-bold text-muted text-uppercase">Document
+                                                    Type</label>
+                                                <select class="form-select bg-light border-0" name="docType"
+                                                    [(ngModel)]="newDoc.docType" required>
+                                                    <option value="" disabled selected>Select type...</option>
+                                                    <option value="IDPROOF">ID Proof</option>
+                                                    <option value="BIRTHCERTIFICATE">Birth Certificate</option>
+                                                    <option value="PUBLICATION">Publication</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-4">
+                                                <label
+                                                    class="form-label small fw-bold text-muted text-uppercase">Document
+                                                    Drive URL / Path</label>
+                                                <input type="text" class="form-control bg-light border-0" name="fileURI"
+                                                    [(ngModel)]="newDoc.fileURI"
+                                                    placeholder="e.g., C:/GrantServe/uploads/file.pdf" required>
+                                            </div>
+                                            <div class="d-grid">
+                                                <button type="submit" class="btn btn-primary fw-bold py-2 rounded-3"
+                                                    [disabled]="!uploadForm.valid">
+                                                    SAVE TO REPOSITORY
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4 border-0 text-muted small fw-bold text-uppercase ls-1">Type</th>
+                                <th class="border-0 text-muted small fw-bold text-uppercase ls-1">File Name</th>
+                                <th class="border-0 text-muted small fw-bold text-center text-uppercase ls-1">Uploaded
+                                </th>
+                                <th class="border-0 text-muted small fw-bold text-uppercase ls-1">Status</th>
+                                <th class="border-0 text-muted small fw-bold text-end pe-4 text-uppercase ls-1">Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (doc of filteredDocuments; track doc.documentID) {
+                            <tr>
+                                <td class="ps-4 fw-semibold text-dark">{{ doc.docType }}</td>
+                                <td class="text-muted small">{{ doc.fileURI.split('/').pop() }}</td>
+                                <td class="text-center text-muted small">{{ doc.uploadedDate | date }}</td>
+                                <td>
+                                    <span class="badge rounded-pill px-3 py-2 bg-warning-subtle text-warning-emphasis">
+                                        {{ doc.verificationStatus }}
+                                    </span>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <button
+                                        class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold transition-up"
+                                        (click)="viewDocument(doc.fileURI)">
+                                        <i class="bi bi-eye me-1"></i> VIEW
+                                    </button>
+                                </td>
+                            </tr>
+                            } @empty {
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted small">No matching documents found.
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" #fileInput style="display: none" (change)="onFileSelected($event)" accept=".pdf,.jpg,.png">
+</main>
+ } @else {
+    <div class="d-flex justify-content-center align-items-center vh-100">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading Profile...</span>
+        </div>
+    </div>
+ }

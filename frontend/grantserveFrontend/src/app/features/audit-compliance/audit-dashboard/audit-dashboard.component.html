@@ -1,0 +1,208 @@
+<div class="ac-module">
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       LIST VIEW
+  ══════════════════════════════════════════════════════════════════════════ -->
+  <div *ngIf="currentView === 'list'">
+
+    <!-- toolbar -->
+    <div class="ac-toolbar">
+      <div class="ac-toolbar__search">
+        <span class="ac-search-icon">&#128269;</span>
+        <input
+          type="text"
+          class="ac-input"
+          placeholder="Search audits…"
+          [(ngModel)]="searchTerm"
+          (input)="onSearchChange()"
+        />
+      </div>
+
+      <div class="ac-toolbar__filters">
+        <select class="ac-select" [(ngModel)]="filterStatus" (change)="onFilterChange()">
+          <option value="">All Statuses</option>
+          <option *ngFor="let s of statusOptions" [value]="s">{{ s }}</option>
+        </select>
+
+        <button class="ac-btn ac-btn--primary" (click)="openCreate()">
+          + New Audit
+        </button>
+      </div>
+    </div>
+
+    <!-- alerts -->
+    <div *ngIf="successMsg" class="ac-alert ac-alert--success">{{ successMsg }}</div>
+    <div *ngIf="errorMsg"   class="ac-alert ac-alert--danger">{{ errorMsg }}</div>
+
+    <!-- loader -->
+    <div *ngIf="isLoading" class="ac-loading">
+      <div class="ac-spinner"></div>
+      <span>Loading audits…</span>
+    </div>
+
+    <!-- table -->
+    <div class="ac-card" *ngIf="!isLoading">
+      <div class="ac-card__header">
+        <span>Audit Dashboard</span>
+        <span class="ac-badge">{{ filteredAudits.length }} records</span>
+      </div>
+
+      <div class="ac-table-wrap">
+        <table class="ac-table">
+          <thead>
+            <tr>
+              <th>Audit&nbsp;ID</th>
+              <th>Officer&nbsp;ID</th>
+              <th>Scope</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let a of filteredAudits" class="ac-table__row">
+              <td class="ac-table__id">{{ a.auditID }}</td>
+              <td>{{ a.officerID }}</td>
+              <td>
+                <span class="pill pill--scope">{{ a.scope }}</span>
+              </td>
+              <td>{{ a.date | date:'dd MMM yyyy' }}</td>
+              <td>
+                <span [class]="statusClass(a.status)">{{ a.status }}</span>
+              </td>
+              <td class="ac-table__actions">
+                <button class="ac-btn ac-btn--sm ac-btn--outline" (click)="openDetail(a)">
+                  View
+                </button>
+            
+              </td>
+            </tr>
+            <tr *ngIf="filteredAudits.length === 0">
+              <td colspan="6" class="ac-empty">No audits found.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       DETAIL / REPORT VIEW
+  ══════════════════════════════════════════════════════════════════════════ -->
+  <div *ngIf="currentView === 'detail' && selectedAudit">
+    <button class="ac-back-btn" (click)="backToList()">&#8592; Back to Dashboard</button>
+
+    <div class="ac-card">
+      <div class="ac-card__header ac-card__header--detail">
+        <span>Audit Report &mdash; {{ selectedAudit.auditID }}</span>
+        <div class="ac-header-actions">
+          
+        </div>
+      </div>
+
+      <div class="ac-card__body">
+
+        <div *ngIf="successMsg" class="ac-alert ac-alert--success">{{ successMsg }}</div>
+        <div *ngIf="errorMsg"   class="ac-alert ac-alert--danger">{{ errorMsg }}</div>
+
+        <!-- meta grid -->
+        <div class="ac-meta-grid">
+          <div class="ac-meta-row">
+            <span class="ac-meta-label">Audit ID</span>
+            <span class="ac-meta-value">{{ selectedAudit.auditID }}</span>
+          </div>
+          <div class="ac-meta-row">
+            <span class="ac-meta-label">Officer ID</span>
+            <span class="ac-meta-value">{{ selectedAudit.officerID }}</span>
+          </div>
+          <div class="ac-meta-row">
+            <span class="ac-meta-label">Scope</span>
+            <span class="ac-meta-value">
+              <span class="pill pill--scope">{{ selectedAudit.scope }}</span>
+            </span>
+          </div>
+          <div class="ac-meta-row">
+            <span class="ac-meta-label">Date</span>
+            <span class="ac-meta-value">{{ selectedAudit.date | date:'dd MMM yyyy' }}</span>
+          </div>
+          <div class="ac-meta-row">
+            <span class="ac-meta-label">Status</span>
+            <span class="ac-meta-value">
+              <span [class]="statusClass(selectedAudit.status)">{{ selectedAudit.status }}</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- findings -->
+        <div class="ac-section">
+          <div class="ac-section__label">Findings</div>
+          <div class="ac-section__body">{{ selectedAudit.findings }}</div>
+        </div>
+
+        <!-- status update -->
+        <div class="ac-section">
+          <div class="ac-section__label">Update Status</div>
+          <div class="ac-inline-form">
+            <select class="ac-select" [(ngModel)]="updateStatus">
+              <option *ngFor="let s of statusOptions" [value]="s">{{ s }}</option>
+            </select>
+            <button class="ac-btn ac-btn--primary" (click)="submitStatusUpdate()">
+              Save Status
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       CREATE VIEW
+  ══════════════════════════════════════════════════════════════════════════ -->
+  <div *ngIf="currentView === 'create'">
+    <button class="ac-back-btn" (click)="backToList()">&#8592; Back to Dashboard</button>
+
+    <div class="ac-card">
+      <div class="ac-card__header">Create New Audit</div>
+
+      <div class="ac-card__body">
+        <div *ngIf="createError" class="ac-alert ac-alert--danger">{{ createError }}</div>
+
+        <div class="ac-form-group">
+          <label class="ac-label">Officer ID <span class="ac-required">*</span></label>
+          <input
+            type="number"
+            class="ac-input"
+            placeholder="e.g. 101"
+            [(ngModel)]="newAudit.officerID"
+          />
+        </div>
+
+        <div class="ac-form-group">
+          <label class="ac-label">Scope <span class="ac-required">*</span></label>
+          <select class="ac-select" [(ngModel)]="newAudit.scope">
+            <option *ngFor="let s of scopeOptions" [value]="s">{{ s }}</option>
+          </select>
+        </div>
+
+        <div class="ac-form-group">
+          <label class="ac-label">Findings <span class="ac-required">*</span></label>
+          <textarea
+            class="ac-textarea"
+            rows="5"
+            placeholder="Describe your audit findings (max 2000 chars)…"
+            [(ngModel)]="newAudit.findings"
+            maxlength="2000"
+          ></textarea>
+          <span class="ac-char-count">{{ newAudit.findings.length }}/2000</span>
+        </div>
+      </div>
+
+      <div class="ac-card__footer">
+        <button class="ac-btn ac-btn--primary" (click)="submitCreate()">Submit Audit</button>
+        <button class="ac-btn ac-btn--outline" (click)="backToList()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+</div>

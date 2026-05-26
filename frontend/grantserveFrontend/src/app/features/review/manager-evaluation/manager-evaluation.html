@@ -1,0 +1,120 @@
+<app-manager-header [showSubHeader]="false"></app-manager-header>
+
+<div class="container mt-4">
+  <!-- Grid View: List of all applications -->
+  @if (!selectedAppId()) {
+    <h2 class="mb-4">Evaluation Management</h2>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      @for (app of readyApplications(); track app.applicationID) {
+        <div class="col">
+          <div class="card h-100 shadow-sm border-0" (click)="selectApplication(app.applicationID)" style="cursor: pointer;">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="card-title text-primary">App #{{ app.applicationID }}</h5>
+                <span class="badge" [ngClass]="app.status === 'APPROVED' ? 'bg-success' : (app.status === 'REJECTED' ? 'bg-danger' : 'bg-info')">
+                  {{ app.status }}
+                </span>
+              </div>
+              <p class="card-text text-dark fw-bold mb-1">{{ app.title }}</p>
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <span class="text-muted small"><i class="bi bi-calendar3 me-1"></i> {{ app.submittedDate }}</span>
+                <span class="text-muted small">Researcher: {{ app.researcherId }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Detail View: Reviewer feedback and final decision -->
+  @else {
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="javascript:void(0)" (click)="selectedAppId.set(null)">All Evaluations</a></li>
+        <li class="breadcrumb-item active">App #{{ selectedAppId() }}</li>
+      </ol>
+    </nav>
+
+    <div class="card shadow-sm border-0">
+      <div class="card-header bg-white py-3">
+        <h4 class="mb-0">Reviewer Feedback Summary</h4>
+      </div>
+      <div class="card-body">
+        
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <div class="p-3 border rounded bg-light text-center">
+              <div class="text-muted small text-uppercase">Total Reviews</div>
+              <div class="h4 mb-0">{{ selectedReviews().length }}</div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3 border rounded bg-light text-center">
+              <div class="text-muted small text-uppercase">Application ID</div>
+              <div class="h4 mb-0 text-primary">{{ selectedAppId() }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover align-middle border">
+            <thead class="table-light">
+              <tr>
+                <th>Reviewer ID</th>
+                <th>Score</th>
+                <th>Comments</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (review of selectedReviews(); track review.reviewID) {
+                <tr>
+                  <td><strong>{{ review.reviewerID }}</strong></td>
+                  <td><span class="badge bg-primary fs-6">{{ review.score }}/10</span></td>
+                  <td>{{ review.comments }}</td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="3" class="text-center py-4 text-muted">No reviews found. Decision cannot be made yet.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Decision Section -->
+        @if (getSelectedAppStatus() !== 'APPROVED' && getSelectedAppStatus() !== 'REJECTED') {
+          <div class="mt-5 p-4 bg-light rounded border border-primary">
+            <div class="row align-items-center">
+              <div class="col-md-7">
+                <h5>Final Manager Decision</h5>
+                @if (selectedReviews().length === 0) {
+                  <p class="text-danger fw-bold mb-0">
+                    <i class="bi bi-exclamation-triangle-fill"></i> Buttons disabled: Feedback required.
+                  </p>
+                } @else {
+                  <p class="text-muted mb-0">Feedback received. Please finalize your decision.</p>
+                }
+              </div>
+              <div class="col-md-5 text-end">
+                <div class="d-flex gap-3 justify-content-end">
+                  <button class="btn btn-outline-danger px-4" 
+                          [disabled]="selectedReviews().length === 0"
+                          (click)="submitDecision('REJECTED')">Reject</button>
+                  <button class="btn btn-success px-5" 
+                          [disabled]="selectedReviews().length === 0"
+                          (click)="submitDecision('APPROVED')">Approve</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        } @else {
+          <div class="mt-5 p-4 bg-white rounded border border-success text-center">
+            <h5 class="text-success"><i class="bi bi-check-circle-fill me-2"></i> Application Processed</h5>
+            <p class="mb-0">Current Status: <strong>{{ getSelectedAppStatus() }}</strong></p>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

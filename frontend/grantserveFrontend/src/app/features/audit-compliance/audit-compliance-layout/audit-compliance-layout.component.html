@@ -1,0 +1,80 @@
+<!-- ═══════════════════════════════════════════════════════════════════════
+     NAVBAR
+═══════════════════════════════════════════════════════════════════════════ -->
+<nav class="gs-nav">
+  <div class="gs-nav__inner">
+
+    <!-- Brand -->
+    <div class="gs-nav__brand">
+      <span class="gs-nav__logo">GrantServe</span>
+      <span class="gs-nav__sub">Compliance &amp; Audit Dashboard</span>
+    </div>
+
+
+    <!-- User & Logout -->
+    <div class="gs-nav__user">
+      <span class="gs-role-badge">{{ roleBadgeLabel }}</span>
+      <button class="gs-logout-btn" (click)="logout()">Logout</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     SUB-HEADER  (title + module tabs + search placeholder)
+═══════════════════════════════════════════════════════════════════════════ -->
+<header class="gs-subheader">
+  <div class="gs-subheader__inner">
+
+    <div class="gs-subheader__left">
+      <h1 class="gs-subheader__title">{{ pageTitle }}</h1>
+
+      <!-- Role-based Tab Pills -->
+      <nav class="gs-tabs" aria-label="Module Tabs">
+        <button
+          *ngIf="canSeeCompliance"
+          class="gs-tab"
+          [class.gs-tab--active]="activeTab === 'compliance'"
+          (click)="switchTab('compliance')"
+          id="comp-tab"
+        >
+          Compliance
+        </button>
+        <button
+          *ngIf="canSeeAudit"
+          class="gs-tab"
+          [class.gs-tab--active]="activeTab === 'audit'"
+          (click)="switchTab('audit')"
+          id="audit-tab"
+        >
+          Audit
+        </button>
+      </nav>
+    </div>
+
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     MAIN CONTENT
+═══════════════════════════════════════════════════════════════════════════ -->
+<main class="gs-main">
+
+  <!-- Access denied guard (should not normally render due to ngOnInit redirect) -->
+  <div *ngIf="!canSeeCompliance && !canSeeAudit" class="gs-access-denied">
+    <div class="gs-access-denied__icon">&#128274;</div>
+    <h2>Access Denied</h2>
+    <p>You do not have permission to view this section.</p>
+    <a routerLink="/home" class="ac-btn ac-btn--primary">Go Home</a>
+  </div>
+
+  <!-- Compliance module -->
+  <app-compliance-dashboard
+    *ngIf="canSeeCompliance && activeTab === 'compliance'"
+  ></app-compliance-dashboard>
+
+  <!-- Audit module -->
+  <app-audit-dashboard
+    *ngIf="canSeeAudit && activeTab === 'audit'"
+  ></app-audit-dashboard>
+
+</main>

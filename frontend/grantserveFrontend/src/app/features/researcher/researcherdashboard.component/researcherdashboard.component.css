@@ -1,0 +1,15 @@
+.status-green { color: #198754 !important; }
+.status-yellow { color: #ffc107 !important; }
+.status-red { color: #dc3545 !important; }
+ 
+.dashboard-card {
+  transition: transform 0.2s ease-in-out;
+  border-bottom: 4px solid transparent;
+}
+ 
+.dashboard-card:hover {
+  transform: translateY(-5px);
+}
+ 
+.ls-1 { letter-spacing: 0.1rem; } 
+ 

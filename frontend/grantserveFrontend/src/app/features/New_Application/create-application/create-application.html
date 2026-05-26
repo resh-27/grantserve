@@ -1,0 +1,153 @@
+<div class="d-flex min-vh-100 bg-light">
+  <app-sidebar></app-sidebar>
+
+  <main class="flex-grow-1 overflow-auto scroll-container">
+    <form class="container-fluid p-4" [formGroup]="applicationForm" (ngSubmit)="submitApplication()">
+      
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h2 class="fw-bold m-0 text-dark">Create New Application</h2>
+          <p class="text-muted small">Fill in the details below to submit your research proposal.</p>
+        </div>
+        <button type="button" class="btn btn-outline-secondary px-4 py-2 rounded-3 fw-semibold shadow-sm" routerLink="/home/programs">
+          <i class="bi bi-x-lg me-2"></i>Cancel
+        </button>
+      </div>
+
+      <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+        
+        <div class="mb-5">
+          <label class="form-label fw-bold text-dark mb-1">Project Title</label>
+          <p class="text-muted smallest mb-3">Give your research a clear and professional name.</p>
+          <input type="text" 
+                 formControlName="title"
+                 class="form-control border-light-subtle shadow-none py-2 px-3 rounded-3" 
+                 placeholder="e.g., Urban Reforestation Project">
+        </div>
+
+        <hr class="text-light-subtle my-4">
+
+        <div class="mb-4">
+          <label class="form-label fw-bold text-dark mb-1">Technical Proposal URL</label>
+          <p class="text-muted smallest mb-3">Provide a secure link to your PDF document.</p>
+          
+          <div class="d-flex align-items-center gap-2">
+            <div class="position-relative flex-grow-1" style="max-width: 550px;">
+              <input type="text" 
+                     formControlName="proposalUrl"
+                     class="form-control bg-light border-dashed py-2 ps-3 pe-5 rounded-3 text-truncate" 
+                     placeholder="https://example.com/my-proposal.pdf"
+                     [class.is-invalid]="status === 'error' && !isVerified">
+              
+              <div class="position-absolute end-0 top-50 translate-middle-y me-3 d-flex align-items-center">
+                @if (status === 'loading') {
+                  <div class="spinner-border spinner-border-sm text-primary"></div>
+                } @else if (isVerified) {
+                  <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                }
+              </div>
+            </div>
+
+            <button type="button" 
+                    class="btn btn-primary px-4 rounded-3 shadow-sm fw-semibold" 
+                    style="height: 42px;"
+                    (click)="verifyUrl()" 
+                    [disabled]="status === 'loading' || applicationForm.get('proposalUrl')?.invalid">
+              <i class="bi bi-shield-check me-2"></i>Verify
+            </button>
+          </div>
+
+          @if (status === 'error' && !isVerified) {
+            <div class="text-danger smallest mt-2 fw-medium animate-fade-in">
+              <i class="bi bi-exclamation-triangle-fill me-1"></i> 
+              Invalid URL or Access Denied. Please ensure the link is a direct PDF URL.
+            </div>
+          }
+        </div>
+
+        @if (isVerified && pdfSrc) {
+          <div class="mt-4 mb-4 animate-fade-in">
+            <div class="card border border-light-subtle shadow-sm rounded-4 overflow-hidden">
+              <div class="card-header bg-white border-bottom p-3 d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                  <span class="badge bg-primary-subtle text-primary me-2">PDF Preview</span>
+                  <small class="text-muted text-truncate" style="max-width: 200px;">
+                    {{ applicationForm.get('proposalUrl')?.value.split('/').pop() }}
+                  </small>
+                </div>
+                
+                <div class="d-flex align-items-center gap-2">
+                  <div class="btn-group me-3">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" (click)="incrementZoom(-0.1)">
+                      <i class="bi bi-zoom-out"></i>
+                    </button>
+                    <span class="btn btn-sm btn-light disabled fw-bold" style="min-width: 60px;">
+                      {{ zoom * 100 | number:'1.0-0' }}%
+                    </span>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" (click)="incrementZoom(0.1)">
+                      <i class="bi bi-zoom-in"></i>
+                    </button>
+                  </div>
+
+                  <div class="d-flex align-items-center gap-1">
+                    <button type="button" class="btn btn-sm btn-light border" (click)="goToPreviousPage()" [disabled]="currentPage <= 1">
+                      <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <span class="small mx-2 fw-semibold">Page {{ currentPage }} of {{ totalPages }}</span>
+                    <button type="button" class="btn btn-sm btn-light border" (click)="goToNextPage()" [disabled]="currentPage >= totalPages">
+                      <i class="bi bi-chevron-right"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-body bg-secondary-subtle p-0 d-flex justify-content-center overflow-auto custom-scrollbar" 
+                   style="height: 600px; background-color: #525659 !important;">
+                <pdf-viewer
+                  [src]="pdfSrc"
+                  [page]="currentPage"
+                  (after-load-complete)="onPdfLoadComplete($event)"
+                  [zoom]="zoom"
+                  [render-text]="true"
+                  [original-size]="false"
+                  [show-all]="false"
+                  [stick-to-page]="true"
+                  (after-load-complete)="onPdfLoadComplete($event)"
+                  (pageChange)="onPageChange($event)"
+                  (error)="onPdfError($event)"
+                  style="width: 100%; display: block;">
+                </pdf-viewer>
+              </div>
+            </div>
+          </div>
+        }
+        <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+  
+  <div>
+    @if (isVerified) {
+      <button type="button" 
+              (click)="isVerified = false; pdfSrc = null;" 
+              class="btn btn-link text-muted text-decoration-none fw-medium p-0">
+        <i class="bi bi-arrow-counterclockwise me-1"></i>Reset URL
+      </button>
+    }
+  </div>
+
+  <button type="submit" 
+          class="btn btn-success px-5 py-2 rounded-3 shadow-sm fw-bold"
+          [disabled]="applicationForm.invalid || !isVerified || status === 'loading'">
+    @if (status === 'loading' && isVerified) {
+      <span class="spinner-border spinner-border-sm me-2"></span>Processing...
+    } @else {
+      <i class="bi bi-send-check me-2"></i>Submit Application
+    }
+  </button>
+  
+</div>
+
+       
+        
+      </div>
+    </form>
+  </main>
+</div>

@@ -1,0 +1,130 @@
+<app-manager-header [showSubHeader]="false"></app-manager-header>
+
+<div class="container mt-4">
+  @if (!selectedApplicationId) {
+    <h2 class="mb-4">Manager Assignment Console</h2>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      @for (app of applications(); track app.applicationID) {
+        <div class="col">
+          <div class="card h-100 shadow-sm border-0" 
+               [ngClass]="{
+                 'border-primary': app.status === 'SUBMITTED' || app.status === 'UNDER_REVIEW',
+                 'bg-light opacity-75': app.status === 'APPROVED' || app.status === 'REJECTED'
+               }"
+               (click)="(app.status !== 'APPROVED' && app.status !== 'REJECTED') ? selectApplication(app.applicationID) : null" 
+               [style.cursor]="(app.status === 'APPROVED' || app.status === 'REJECTED') ? 'default' : 'pointer'">
+            
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="card-title text-primary">App {{ app.applicationID }}</h5>
+                
+                @if (app.status === 'APPROVED') {
+                  <span class="badge bg-success">APPROVED</span>
+                } @else if (app.status === 'REJECTED') {
+                  <span class="badge bg-danger">REJECTED</span>
+                } @else if (app.status === 'UNDER_REVIEW') {
+                  <span class="badge bg-warning text-dark">UNDER REVIEW</span>
+                } @else {
+                  <span class="badge bg-info">SUBMITTED</span>
+                }
+              </div>
+
+              <p class="card-text text-muted small">
+                {{ (app.status === 'APPROVED' || app.status === 'REJECTED') ? 'This application has been finalized.' : 'Manage and assign technical proposals.' }}
+              </p>
+              
+              <div class="d-flex justify-content-end mt-3">
+                <button class="btn btn-sm" 
+                        [ngClass]="{
+                          'btn-primary': app.status === 'SUBMITTED' || app.status === 'UNDER_REVIEW',
+                          'btn-secondary disabled': app.status === 'APPROVED' || app.status === 'REJECTED'
+                        }">
+                  @if (app.status === 'APPROVED' || app.status === 'REJECTED') {
+                    Assignment Complete
+                  } @else {
+                    View Proposals
+                  }
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @else {
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="javascript:void(0)" (click)="selectedApplicationId = null">All Assignments</a>
+        </li>
+        <li class="breadcrumb-item active">App #{{ selectedApplicationId }}</li>
+      </ol>
+    </nav>
+
+    <div class="card shadow-sm border-0">
+      <div class="card-header bg-white py-3">
+        <h4 class="mb-0">Assign Proposals to Reviewers</h4>
+      </div>
+      <div class="card-body">
+        
+        @if (proposals().length > 0) {
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <label class="form-label fw-bold">1. Select a Proposal:</label>
+              <select class="form-select form-select-lg" [(ngModel)]="selectedProposalId">
+                <option [ngValue]="null">-- Select a Proposal --</option>
+                @for (p of proposals(); track p.proposalID) {
+                  @if (p.status === 'SUBMITTED' || p.status === 'UNDER_REVIEW' || p.status === 'REVIEWED') {
+                    <option [value]="p.proposalID">
+                      Proposal #{{p.proposalID}} ({{(p.status === 'UNDER_REVIEW' || p.status === 'REVIEWED') ? 'Add More Reviewers' : 'New Assignment'}})
+                    </option>
+                  }
+                }
+              </select>
+
+              @if (!hasPendingProposals()) {
+                <div class="alert alert-success mt-2 py-2 small">
+                  <i class="bi bi-check-circle-fill me-2"></i> All proposals for this app are finalized.
+                </div>
+              }
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-bold">2. Assign to Reviewer:</label>
+              <select class="form-select form-select-lg" [(ngModel)]="selectedReviewerId" [disabled]="!hasPendingProposals()">
+                <option [ngValue]="null">-- Choose Reviewer --</option>
+                @for (r of reviewers(); track r.userid) {
+                  <option [value]="r.userid">{{r.name}} (ID: {{r.userid}})</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="mt-5 p-4 bg-light rounded border border-primary">
+            <div class="row align-items-center">
+              <div class="col-md-8">
+                <h5>Confirm Assignment</h5>
+                <p class="text-muted mb-0">You can assign multiple reviewers to this same proposal document.</p>
+              </div>
+              <div class="col-md-4 text-end">
+                <button class="btn btn-success btn-lg px-5" 
+                        [disabled]="!selectedProposalId || !selectedReviewerId"
+                        (click)="submitAssignment()">
+                  Confirm Assignment
+                </button>
+              </div>
+            </div>
+          </div>
+        } @else {
+          <div class="text-center py-5">
+            <i class="bi bi-clipboard-x display-4 text-muted"></i>
+            <h5 class="mt-3">No Proposals Available</h5>
+            <button class="btn btn-primary" (click)="selectedApplicationId = null">Return to List</button>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

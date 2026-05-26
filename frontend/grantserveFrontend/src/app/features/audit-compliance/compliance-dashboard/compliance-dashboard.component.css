@@ -1,0 +1,54 @@
+/* Uses the shared audit-compliance design system */
+@import url('../audit-compliance.css');
+.ac-module {
+  background-color: #ffffff;
+  padding: 20px;
+  min-height: 100vh;
+  color: #333;
+}
+
+/* Button Visibility Fixes */
+.ac-btn {
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+/* Define specific colors so they don't disappear */
+.ac-btn--primary {
+  background-color: #2563eb; /* Strong Blue */
+  color: white !important;
+}
+
+.ac-btn--outline {
+  background-color: transparent;
+  border: 1px solid #d1d5db; /* Grey border for white background */
+  color: #374151;
+}
+
+.ac-btn--outline:hover {
+  background-color: #f9fafb;
+}
+
+.ac-btn--accent {
+  background-color: #7c3aed; /* Purple */
+  color: white !important;
+}
+
+.ac-btn--success { background-color: #059669; color: white; }
+.ac-btn--warning { background-color: #d97706; color: white; }
+.ac-btn--danger  { background-color: #dc2626; color: white; }
+
+/* Table and Card visibility */
+.ac-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  margin-top: 1rem;
+}

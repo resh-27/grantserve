@@ -1,0 +1,85 @@
+<div class="container mt-4">
+  <!-- Dynamic Breadcrumb -->
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb" style="font-size: 1.1rem;">
+      <li class="breadcrumb-item">
+        <a href="javascript:void(0)" (click)="router.navigate(['/reviewer-dashboard'])" class="text-decoration-none">
+          All Assignments
+        </a>
+      </li>
+      <li class="breadcrumb-item active text-dark" aria-current="page">
+        App #{{ reviewData?.proposalID || reviewData?.proposalId }}
+      </li>
+    </ol>
+  </nav>
+
+  <div class="row justify-content-center">
+    <!-- Left Column: Proposal Summary -->
+    <div class="col-md-5">
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white border-bottom py-3">
+          <h4 class="mb-0 fw-bold">Review Assignment #{{ reviewData?.reviewID }}</h4>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label class="text-muted small d-block fw-bold">1. PROPOSAL ID:</label>
+            <span class="fs-5">{{ reviewData?.proposalID || reviewData?.proposalId }}</span>
+          </div>
+          <div class="mb-3">
+            <label class="text-muted small d-block fw-bold">CURRENT STATUS:</label>
+            <span class="badge bg-warning text-dark px-2">{{ reviewData?.status || 'UNDER_REVIEW' }}</span>
+          </div>
+          
+          <div class="text-center p-4 mt-4 bg-light rounded border border-primary border-opacity-10">
+            <i class="bi bi-file-earmark-pdf text-danger fs-1"></i>
+            <p class="mt-2 mb-0 fw-bold">Proposal Document</p>
+            <p class="text-muted small">Technical documentation for review.</p>
+            
+            <!-- Passes the specific URI for the current Proposal ID -->
+            <button type="button" 
+                    (click)="viewDocument(reviewData?.fileURI || reviewData?.fileUri)" 
+                    class="btn btn-primary mt-2 px-4 shadow-sm">
+              <i class="bi bi-box-arrow-up-right me-2"></i>View Full Document
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Form Inputs -->
+    <div class="col-md-7">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white border-bottom py-3">
+          <h4 class="mb-0 fw-bold">Evaluation Details</h4>
+        </div>
+        <div class="card-body">
+          <form #evalForm="ngForm" (ngSubmit)="submitReview()">
+            <div class="mb-4">
+              <label class="form-label fw-bold">Assign Score (0 - 10):</label>
+              <input type="number" class="form-control form-control-lg bg-light" [(ngModel)]="score" name="score" required min="0" max="10" placeholder="Enter score">
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label fw-bold">Reviewer Comments:</label>
+              <textarea class="form-control bg-light" [(ngModel)]="comments" name="comments" rows="6" required placeholder="Provide detailed feedback..."></textarea>
+            </div>
+
+            <div class="p-4 rounded border border-primary bg-light bg-opacity-50 mb-3">
+              <h5 class="fw-bold">Confirm Review</h5>
+              <p class="text-muted mb-0 small">Submitting this form will finalize the evaluation for this proposal.</p>
+            </div>
+
+            <div class="d-flex gap-3">
+              <button type="submit" class="btn btn-success btn-lg flex-grow-1 shadow-sm" [disabled]="!evalForm.valid">
+                Submit Final Review
+              </button>
+              <button type="button" class="btn btn-outline-secondary btn-lg px-4" (click)="router.navigate(['/reviewer-dashboard'])">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
