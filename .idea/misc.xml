@@ -6,6 +6,19 @@
       <list>
         <option value="$PROJECT_DIR$/project/Api-Gateway/pom.xml" />
         <option value="$PROJECT_DIR$/project/admin-server/pom.xml" />
+        <option value="$PROJECT_DIR$/project/Auth-Service/pom.xml" />
+        <option value="$PROJECT_DIR$/project/audit-service/audit_compliance_service/pom.xml" />
+        <option value="$PROJECT_DIR$/project/config-server/pom.xml" />
+        <option value="$PROJECT_DIR$/project/budget-service/pom.xml" />
+        <option value="$PROJECT_DIR$/project/review-service/pom.xml" />
+        <option value="$PROJECT_DIR$/project/program-service/pom.xml" />
+        <option value="$PROJECT_DIR$/project/security-parent/pom.xml" />
+        <option value="$PROJECT_DIR$/project/service-registry/pom.xml" />
+        <option value="$PROJECT_DIR$/project/audit-log-service/pom.xml" />
+        <option value="$PROJECT_DIR$/project/evaluation-service/pom.xml" />
+        <option value="$PROJECT_DIR$/project/researcher-service/pom.xml" />
+        <option value="$PROJECT_DIR$/project/Application-service/pom.xml" />
+        <option value="$PROJECT_DIR$/project/disbursement-service/pom.xml" />
       </list>
     </option>
   </component>
