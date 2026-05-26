@@ -1,0 +1,34 @@
+package com.cognizant.evaluation_service.config;
+
+// Use the SERVLET version
+import com.cts.grantserve.security.servlet.SharedSecurityUtils;
+import com.cts.grantserve.security.servlet.SharedServletConfig;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.Customizer;
+
+
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity // This lets you use @PreAuthorize in your Controllers
+@Import(SharedServletConfig.class)
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        SharedSecurityUtils.applySharedSecurity(http);
+        return http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().authenticated()
+
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+                .build();
+    }
+}

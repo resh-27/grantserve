@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: researcher-service
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/researcher_service
+    username: ${PROG_DB_USER}
+    password: ${PROG_DB_PASS}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  session:
+    store-type: none
+
+  sql:
+    init:
+      mode: never
+
+server:
+  port: 8099

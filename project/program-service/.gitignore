@@ -1,0 +1,92 @@
+####################################
+# Maven
+####################################
+target/
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+####################################
+# Maven Wrapper (DO commit wrapper jar)
+####################################
+.mvn/wrapper/maven-wrapper.jar
+
+####################################
+# IDEs
+####################################
+### IntelliJ IDEA ###
+.idea/
+*.iml
+*.iws
+*.ipr
+
+### Eclipse / STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache/
+
+### VS Code ###
+.vscode/
+
+####################################
+# OS files
+####################################
+.DS_Store
+Thumbs.db
+
+####################################
+# Logs
+####################################
+*.log
+spring.log
+
+####################################
+# Compiled class files
+####################################
+*.class
+
+####################################
+# Package files (never commit)
+####################################
+*.jar
+*.war
+*.ear
+*.nar
+*.zip
+*.tar.gz
+*.rar
+
+####################################
+# JVM crash logs
+####################################
+hs_err_pid*
+replay_pid*
+
+####################################
+# Environment / Secrets
+####################################
+.env
+.env.*
+application-local.properties
+application-local.yml
+application-dev.properties
+application-dev.yml
+application-prod.properties
+application-prod.yml
+
+####################################
+# Test & Coverage Reports
+####################################
+/target/site/
+/jacoco/
+/coverage/
+
+####################################
+# Temporary files
+####################################
+*.tmp
+*.bak
+*.swp

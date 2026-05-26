@@ -1,0 +1,62 @@
+spring:
+  application:
+    name: audit-log-service
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: JDBC:mysql://localhost:3306/AuditLog
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+  session:
+    jdbc:
+      initialize-schema: always
+
+server:
+  port: 9001
+
+jwt:
+  secret: Y2Y4ZTM1YmYtYjYyMC00ZDllLTlhZTMtZDY2ZDU4ZTMxZmE5Cg==
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    lease-renewal-interval-in-seconds: 30
+    prefer-ip-address: true
+
+# Expose resilience4j actuator endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,ratelimiters
+  endpoint:
+    health:
+      show-details: always
+  health:
+    ratelimiters:
+      enabled: true
+
+# Circuit breaker configuration in application.yml
+resilience4j:
+  # Rate limiter configuration
+  ratelimiter:
+    instances:
+      externalApi:
+        # Allow 100 calls per refresh period
+        limit-for-period: 100
+        # Refresh the limit every 1 second
+        limit-refresh-period: 1s
+        # Wait up to 500ms if limit is exhausted
+        timeout-duration: 500ms

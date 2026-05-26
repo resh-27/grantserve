@@ -1,0 +1,77 @@
+server:
+  port: 8091
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/Programs
+    username: ${PROG_DB_USER}
+    password: ${PROG_DB_PASS}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+resilience4j:
+  retry:
+    retry-aspect-order: 2
+    instances:
+      budgetService:
+        maxAttempts: 3
+        waitDuration: 2s
+        retry-exceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - feign.FeignException
+        ignore-exceptions: &retryIgnore
+          - io.github.resilience4j.circuitbreaker.CallNotPermittedException
+          - feign.FeignException$NotFound
+          - feign.FeignException$BadRequest
+          - com.cts.grantserve.program_service.exception.BudgetClosedException
+          - com.cts.grantserve.program_service.exception.BudgetNotFoundException
+          - com.cts.grantserve.program_service.exception.InsufficientFundsException
+      auditLogRetry:
+        maxAttempts: 3
+        waitDuration: 2s
+        retry-exceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - feign.FeignException
+        ignore-exceptions: *retryIgnore
+  circuitbreaker:
+    circuit-breaker-aspect-order: 1
+    instances:
+      auditLogCB:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+        record-exceptions: &cbRecord
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - feign.FeignException
+        ignore-exceptions: &cbIgnore
+          - io.github.resilience4j.circuitbreaker.CallNotPermittedException
+          - feign.FeignException$NotFound
+          - feign.FeignException$BadRequest
+          - com.cts.grantserve.program_service.exception.BudgetClosedException
+          - com.cts.grantserve.program_service.exception.BudgetNotFoundException
+          - com.cts.grantserve.program_service.exception.InsufficientFundsException
+          - com.cts.grantserve.program_service.exception.InvalidProgramStatusException
+          - com.cts.grantserve.program_service.exception.ProgramNotFoundException
+          - com.cts.grantserve.program_service.exception.ProgramNotModifiableException
+          - com.cts.grantserve.program_service.exception.UserException
+      budgetService:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+        record-exceptions: *cbRecord
+        ignore-exceptions: *cbIgnore
+
+logging:
+  level:
+    root: INFO
+    com.cts.grantserve: DEBUG

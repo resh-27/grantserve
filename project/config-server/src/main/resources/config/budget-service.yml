@@ -1,0 +1,63 @@
+server:
+  port: 8096
+
+spring:
+  # Database Connection
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/Budgets
+    username: ${PROG_DB_USER}
+    password: ${PROG_DB_PASS}
+
+  session:
+    jdbc:
+      initialize-schema: always
+
+  cache:
+    cache-names: activeGrants
+    caffeine:
+      spec: expireAfterWrite=1m,maximumSize=100
+
+resilience4j:
+  retry:
+    retry-aspect-order: 2
+    instances:
+      auditLogRetry:
+        maxAttempts: 3
+        waitDuration: 2s
+        retry-exceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - feign.FeignException
+        ignore-exceptions:
+          - io.github.resilience4j.circuitbreaker.CallNotPermittedException
+          - com.cts.grantserve.budget_service.exception.BudgetClosedException
+          - com.cts.grantserve.budget_service.exception.BudgetNotFoundException
+          - com.cts.grantserve.budget_service.exception.InsufficientFundsException
+  circuitbreaker:
+    circuit-breaker-aspect-order: 1
+    instances:
+      auditLogCB:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+        record-exceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - feign.FeignException
+        ignore-exceptions:
+          - com.cts.grantserve.budget_service.exception.BudgetClosedException
+          - com.cts.grantserve.budget_service.exception.BudgetNotFoundException
+          - com.cts.grantserve.budget_service.exception.InsufficientFundsException
+          - com.cts.grantserve.budget_service.exception.InvalidProgramStatusException
+          - com.cts.grantserve.budget_service.exception.BudgetNotModifiableException
+          - com.cts.grantserve.budget_service.exception.UserException
+
+logging:
+  level:
+    root: INFO
+    com.cts.grantserve: DEBUG

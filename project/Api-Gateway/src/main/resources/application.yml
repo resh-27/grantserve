@@ -1,0 +1,157 @@
+server:
+  port: 8081
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 5s
+        permittedNumberOfCallsInHalfOpenState: 3
+        minimumNumberOfCalls: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+    instances:
+      authServiceCB:
+        baseConfig: default
+      evaluationServiceCB:
+        baseConfig: default
+      applicationServiceCB:
+        baseConfig: default
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      httpclient:
+        connect-timeout: 5000
+        response-timeout: 10s
+      server:
+        webflux:
+          routes:
+            - id: auth-service
+              uri: lb://auth-service
+              predicates:
+                - Path=/auth-service/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: authServiceCB
+                    fallbackUri: forward:/fallback/auth
+                    ignore-exceptions:
+                      - feign.FeignException$ServiceUnavailable
+                - StripPrefix=1
+
+            - id: evaluation-service
+              uri: lb://evaluation-service
+              predicates:
+                - Path=/evaluation-service/**
+              filters:
+                - StripPrefix=1
+                - name: CircuitBreaker
+                  args:
+                    name: evaluationServiceCB
+                    fallbackUri: forward:/fallback/evaluation
+            - id: review-service
+              uri: lb://review-service
+              predicates:
+                - Path=/review-service/**
+              filters:
+                - StripPrefix=1
+                - name: CircuitBreaker
+                  args:
+                    name: reviewServiceCB
+                    fallbackUri: forward:/fallback/review
+
+            - id: application-service
+              uri: lb://application-service
+              predicates:
+                - Path=/application-service/**
+              filters:
+                - StripPrefix=1
+                - name: CircuitBreaker
+                  args:
+                    name: applicationServiceCB
+                    fallbackUri: forward:/fallback/application
+                    statusCodes:
+                      - 500
+
+            - id: program-service
+              uri: lb://program-service
+              predicates:
+                - Path=/program-service/**
+              filters:
+                - StripPrefix=1
+                - TokenRelay
+
+            - id: budget-service
+              uri: lb://budget-service
+              predicates:
+                - Path=/budget-service/**
+              filters:
+                - StripPrefix=1
+                - TokenRelay
+
+            - id: audit-log-service
+              uri: lb://audit-log-service
+              predicates:
+                - Path=/audit-log-service/**
+              filters:
+                - StripPrefix=1
+                - TokenRelay
+            - id: disbursement-service
+              uri: lb://disbursement-service
+              predicates:
+                - Path=/disbursement-service/**
+              filters:
+                - StripPrefix=1
+                - TokenRelay
+            - id: researcher-service
+              uri: lb://researcher-service
+              predicates:
+                  - Path=/researcher-service/**
+              filters:
+                - StripPrefix=1
+
+            - id: researcher-service
+              uri: lb://researcher-service
+              predicates:
+                - Path=/researcher-service/**
+              filters:
+                - StripPrefix=1
+                - TokenRelay
+
+            - id: audit-compliance-service
+              uri: lb://audit-compliance-service
+              predicates:
+                - Path=/audit-compliance-service/**
+              filters:
+                - StripPrefix=1
+                - TokenRelay
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+jwt:
+  secret: ${JWT_SECRET}
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+logging:
+  level:
+    org.springframework.cloud.circuitbreaker.resilience4j: ERROR
